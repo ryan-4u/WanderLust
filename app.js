@@ -26,10 +26,26 @@ app.get("/" , (req,res) => {
 });
 
 //index route
-app.get("/listing" , async (req,res) => {
+app.get("/listings" , async (req,res) => {
   const allListings = await Listing.find({})
   res.render("listings/index.ejs" , { allListings }) ;
 });
+
+//new route
+app.get("/listings/new" , (req,res) => {
+  res.render("listings/new.ejs");
+});
+//create route
+app.post("/listings", async (req,res) => {
+  //let { title,description,image,price,location,country } = req.body ;
+  
+  //let { listing } = req.body.listing ;
+  //let newListing = new Listing(listing) ;
+
+  let newListing = new Listing(req.body.listing) ;
+  await newListing.save() ;
+  res.redirect("/listings") ;
+}) ;
 
 //show route
 app.get("/listings/:id", async (req,res) => {
@@ -37,6 +53,8 @@ app.get("/listings/:id", async (req,res) => {
   const listing = await Listing.findById(id) ;
   res.render("listings/show.ejs", {listing} ) ;
 }) ;
+
+
 
 
 // app.get("/testListing" , async (req,res) => {
