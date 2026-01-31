@@ -1,4 +1,7 @@
-/* Navbar styling */
+body{
+     font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+/* Navbar */
 .navbar{
     height: 4rem;
     background-color: white;
@@ -10,5 +13,68 @@
 }
 
 .nav-link{
-    color: #222 !important;
+    color: #222222 !important;
+}
+
+/* footer */
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+.f-info-links a:hover{
+    text-decoration: underline ;
+}
+
+.f-info-links, .f-info-socials , .f-info-brand{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-socials i{
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.f-info{
+    text-align: center;
+    height: 7rem;
+    background-color: #ebebeb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Cards */
+.card{
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+.card-img-top{
+    border-radius: .3rem;
+    width: 100% !important;
+    object-fit: cover;
+}
+
+.card-body{
+    padding: 0 !important;
+}
+
+.card-text p{
+    font-weight: 400 !important;
+}
+
+.listing-link{
+    text-decoration: none;
+}
+/* Card effect */
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2 ;
+    background-color: white;
 }
