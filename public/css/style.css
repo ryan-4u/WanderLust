@@ -1,3 +1,14 @@
-body{
-    background-color: steelblue;
+/* Navbar styling */
+.navbar{
+    height: 4rem;
+    background-color: white;
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link{
+    color: #222 !important;
 }
