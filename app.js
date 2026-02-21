@@ -5,6 +5,7 @@ const path = require("path")
 const methodOverride = require("method-override") ;
 const ejsMate = require("ejs-mate") ;
 const ExpressError = require("./utils/ExpressError.js");
+const session = require("express-session") ;
 
 // requiring our routes
 const listings = require("./routes/listing.js") ;
@@ -30,6 +31,19 @@ app.use(methodOverride("_method")) ;
 app.engine( "ejs" , ejsMate) ;
 app.use(express.static(path.join(__dirname,"/public"))) ;
 
+// using session
+const sessionOptions = {
+  secret : "mysupersecretcode" ,
+  resave : false ,
+  saveUninitialized : true ,
+  cookie :{
+    expires : Date.now() + 7 * 24 * 60 * 60 * 1000 ,
+    maxAge : 7 * 24 * 60 * 60 * 1000 ,
+    httpOnly : true
+  }
+} ;
+app.use( session(sessionOptions) ) ;
+
 app.get("/" , (req,res) => {
     res.send("Hi , i am Groot !") ;
 });
@@ -40,7 +54,7 @@ app.use("/listings/:id/reviews",reviews) ;
 
 
 // for routes that doesnot exist
-app.all( /.*/ ,(res,req,next) => {
+app.all( /.*/ ,(req,res,next) => {
   next( new ExpressError( 404 , "Page Not Found"));
 });   
 
