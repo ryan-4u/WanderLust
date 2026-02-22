@@ -6,16 +6,8 @@ const Review = require("../models/review.js") ;
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const {listingSchema ,reviewSchema} = require("../schema.js") ;
+const {validateReview} = require("../middleware.js");
 
-
-const validateReview = (req,res,next) => {
-  let result = reviewSchema.validate(req.body);
-  if ( result.error){
-    throw new ExpressError(404 , result.error) ;
-  } else {
-    next() ;  
-  }
-}
 
 //post review route
 router.post("/" , validateReview ,wrapAsync( async(req,res) => {
