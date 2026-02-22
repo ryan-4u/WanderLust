@@ -7,6 +7,9 @@ const ejsMate = require("ejs-mate") ;
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session") ;
 const flash = require("connect-flash") ;
+const passport = require("passport") ;
+const LocalStrategy = require("passport-local") ;
+const User = require("./models/user.js") ;
 
 // requiring our routes
 const listings = require("./routes/listing.js") ;
@@ -51,6 +54,14 @@ app.get("/" , (req,res) => {
 app.use( session(sessionOptions) ) ;
 app.use( flash() ) ;
 
+//using passport for authentication and authorization
+app.use( passport.initialize() ) ;
+app.use( passport.session() ) ;
+passport.use( new LocalStrategy( User.authenticate() ));
+
+passport.serializeUser( User.serializeUser() ) ;
+passport.deserializeUser( User.deserializeUser() ) ;
+
 app.use( (req,res,next) => {
   res.locals.success = req.flash("success") ;
   res.locals.error = req.flash("error") ;
@@ -61,6 +72,15 @@ app.use( (req,res,next) => {
 app.use("/listings",listings) ;
 app.use("/listings/:id/reviews",reviews) ;
 
+app.get("/demouser" , async (req,res) => {
+  let fakeUser = new User({
+    email : "student@gmail.com" ,
+    username : "delta-student" ,
+  }) ;
+
+  let registeredUser = await User.register( fakeUser , "helloworld") ;
+  res.send(registeredUser);
+})
 
 // for routes that doesnot exist
 app.all( /.*/ ,(req,res,next) => {
@@ -74,5 +94,5 @@ app.use( (err,req,res,next) => {
 })
 
 app.listen( 8080 , () => {
-    console.log(" server is listening.. ") ;
+    console.log("server is listening...") ;
 }) ;
