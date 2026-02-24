@@ -12,7 +12,11 @@ const listingSchema = new Schema({
         url : String ,
         filename : String    
     } ,
-    price : { type : Number } ,
+    price : { 
+        type : Number ,
+        required: true,
+        min: [1, "Price must be greater than 0"] 
+    } ,
     location : { type : String } ,
     country : { type : String } ,
     reviews : [

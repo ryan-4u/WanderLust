@@ -6,7 +6,13 @@ module.exports.listingSchema = Joi.object( {
         description : Joi.string().required() ,
         location : Joi.string().required() ,
         country : Joi.string().required() ,
-        price : Joi.string().required().min(0) ,
+        price: Joi.number()
+        .greater(0)
+        .required()
+        .messages({
+            "number.base": "Price must be a number",
+            "number.greater": "Price must be greater than 0"
+        }),
         image : Joi.string().allow("",null)
     }).required()
 });

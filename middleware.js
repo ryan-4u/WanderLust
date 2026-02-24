@@ -38,20 +38,30 @@ module.exports.isOwner = async (req,res,next) =>{
 }
 
 // validateListing function as middleware
-module.exports.validateListing = (req,res,next) => {
+module.exports.validateListing = (req, res, next) => {
   let result = listingSchema.validate(req.body);
-  if ( result.error){
-    throw new ExpressError(404 , result.error) ;
-  } else {
-    next() ;  
-  }
-}
 
-//validateReviw fxn as middleware
+  if (result.error) {
+    
+    let errMsg = result.error.details.map(el => el.message).join(",");
+    
+    req.flash("error", errMsg);
+    // Detect whether it's create or edit route
+    if (req.method === "POST") {
+      return res.redirect("/listings/new");
+    }
+    if (req.method === "PUT") {
+      return res.redirect(`/listings/${req.params.id}/edit`);
+    }
+  }
+  next();
+};
+
+//validateReview fxn as middleware
 module.exports.validateReview = (req,res,next) => {
   let result = reviewSchema.validate(req.body);
   if ( result.error){
-    throw new ExpressError(404 , result.error) ;
+    throw new ExpressError(400 , result.error) ;
   } else {
     next() ;  
   }
