@@ -52,9 +52,9 @@ const sessionOptions = {
   }
 } ;
 
-app.get("/" , (req,res) => {
-    res.send("Hi , i am Groot !") ;
-});
+// app.get("/" , (req,res) => {
+//     res.send("Hi , i am Groot !") ;
+// });
 
 app.use( session(sessionOptions) ) ;
 app.use( flash() ) ;
