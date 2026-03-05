@@ -1,4 +1,5 @@
 <% layout("/layouts/boilerplate") %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <div class="row mt-3 mb-3">
     <div class="col-8 offset-3">
@@ -15,22 +16,27 @@
             <p class="card-text"> <b>Category:</b> <%= listing.category %> </p>
         </div>
     </div>
+
     <% if( currUser && currUser._id.equals(listing.owner._id)){ %>
     <div class="btns">
-    <a 
-      href="/listings/<%=listing._id%>/edit" 
-      class="btn btn-dark edit-btn col-1 offset-3"
-    >Edit</a>
-    <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
-        <button class=" btn btn-dark  offset-5">DELETE</button>
-    </form> 
+        <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark edit-btn col-1 offset-3">Edit</a>
+        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+            <button class="btn btn-dark offset-5">DELETE</button>
+        </form> 
     </div>
     <% } %>
-    
+
+    <!-- Map -->
+    <div class="col-6 offset-3 mt-3 mb-3">
+        <h4>Where you'll be</h4>
+        <div id="map" style="height: 300px; border-radius: 10px;"></div>
+    </div>
+
     <div class="col-8 offset-3 mb-3">
+        
+        <% if( currUser ) { %>
         <hr>
-        <h4>Leave a Review</h4>
-        <% if( currUser ) { %> 
+        <h4>Leave a Review</h4> 
         <form 
            action="/listings/<%= listing.id %>/reviews" 
            method="POST" 
@@ -38,20 +44,20 @@
            class="needs-validation"
         >
             <div class="mb-3 mt-3">
-            <label for="rating" class="form-label">Rating</label>
-            <fieldset class="starability-coinFlip">
-                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
-                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                <label for="first-rate1" title="Terrible">1 star</label>
-                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                <label for="first-rate2" title="Not good">2 stars</label>
-                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                <label for="first-rate3" title="Average">3 stars</label>
-                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                <label for="first-rate4" title="Very good">4 stars</label>
-                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                <label for="first-rate5" title="Amazing">5 stars</label>
-            </fieldset>
+                <label for="rating" class="form-label">Rating</label>
+                <fieldset class="starability-coinFlip">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
             </div>
             <div class="mb-3 mt-3">
                 <label for="comment" class="form-label">Comment</label>
@@ -63,18 +69,15 @@
                    class="form-control"
                    required
                 ></textarea>
-                <div class="invalid-feedback">
-                    Please add some commments for review
-                </div>
+                <div class="invalid-feedback">Please add some comments for review</div>
             </div>
             <button class="btn btn-outline-dark">Submit</button>
         </form>
         <% } %>
 
-        
-        <!-- showing our reviews -->
+        <% if(listing.reviews.length > 0) { %>
         <hr>
-        <p><b> All Reviews </b></p>
+        <p><b>All Reviews</b></p>
         <div class="row">
         <% for(review of listing.reviews) { %>
             <div class="card col-5 ms-3 mb-3">
@@ -94,10 +97,29 @@
                 <% } %>
             </div>
         <% } %> 
-        </div> 
-
+        </div>
+    <% } %>
     </div>
 </div>
 
-    
-    
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const coordinates = <%- JSON.stringify(listing.geometry ? listing.geometry.coordinates : [0,0]) %>;
+    const title = <%- JSON.stringify(listing.title) %>;
+    const price = <%- JSON.stringify(listing.price) %>;
+    const lat = coordinates[1];
+    const lng = coordinates[0];
+
+    const map = L.map("map").setView([lat, lng], 10);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    if (lat !== 0 || lng !== 0) {
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(`<b>${title}</b><br>&#8377; ${price} / night`)
+            .openPopup();
+    }
+</script>

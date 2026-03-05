@@ -1,6 +1,7 @@
 const Listing = require("../models/listing") ;
 const { cloudinary } = require("../cloudConfig");
 const ExpressError = require("../utils/ExpressError")
+const { geocode } = require("../utils/geocode");
 
 module.exports.index = async (req, res) => {
     const { category, q } = req.query;
@@ -57,6 +58,10 @@ module.exports.createListing = async (req,res,next) => {
     newListing.owner = req.user._id ;
     newListing.image = {url,filename} ;
 
+    // geocode the location
+    const coordinates = await geocode(newListing.location, newListing.country);
+    newListing.geometry = { type: "Point", coordinates };
+
     await newListing.save() ;
     req.flash("success","New listing created") ;
     res.redirect("/listings") ;
@@ -93,6 +98,10 @@ module.exports.updateListing = async (req, res) => {
   listing.country = req.body.listing.country;
   listing.location = req.body.listing.location;
   listing.category = req.body.listing.category;
+
+  // re-geocode if location or country changed
+  const coordinates = await geocode(listing.location, listing.country);
+  listing.geometry = { type: "Point", coordinates };
 
   // If new image uploaded
   if (req.file) {
