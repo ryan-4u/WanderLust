@@ -1,10 +1,27 @@
 const Listing = require("../models/listing") ;
 const { cloudinary } = require("../cloudConfig");
+const ExpressError = require("../utils/ExpressError")
 
-module.exports.index = async (req,res) => {
-  const allListings = await Listing.find({})
-  res.render("listings/index.ejs" , { allListings }) ;
-} ;
+module.exports.index = async (req, res) => {
+    const { category, q } = req.query;
+
+    let filter = {};
+
+    if (category) {
+        filter.category = category;
+    }
+
+    if (q && q.trim() !== "") {
+        filter.$or = [
+            { title:    { $regex: q, $options: "i" } },
+            { location: { $regex: q, $options: "i" } },
+            { country:  { $regex: q, $options: "i" } },
+        ];
+    }
+
+    const allListings = await Listing.find(filter);
+    res.render("listings/index.ejs", { allListings, activeCategory: category || null, searchQuery: q || "" });
+};
 
 module.exports.renderNewForm = (req,res) => {
   res.render("listings/new.ejs");
@@ -75,6 +92,7 @@ module.exports.updateListing = async (req, res) => {
   listing.price = req.body.listing.price;
   listing.country = req.body.listing.country;
   listing.location = req.body.listing.location;
+  listing.category = req.body.listing.category;
 
   // If new image uploaded
   if (req.file) {
@@ -109,4 +127,22 @@ module.exports.destroyListing = async (req, res) => {
   await Listing.findByIdAndDelete(id);
   req.flash("success", "Listing deleted");
   res.redirect("/listings");
+};
+
+module.exports.search = async (req, res) => {
+    const { q, category } = req.query;
+    let filter = {};
+
+    if (category) filter.category = category;
+
+    if (q && q.trim() !== "") {
+        filter.$or = [
+            { title:    { $regex: q, $options: "i" } },
+            { location: { $regex: q, $options: "i" } },
+            { country:  { $regex: q, $options: "i" } },
+        ];
+    }
+
+    const allListings = await Listing.find(filter);
+    res.json(allListings);
 };

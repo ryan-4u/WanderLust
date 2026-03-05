@@ -13,7 +13,10 @@ module.exports.listingSchema = Joi.object( {
             "number.base": "Price must be a number",
             "number.greater": "Price must be greater than 0"
         }),
-        image : Joi.string().allow("",null)
+        image : Joi.string().allow("",null) ,
+        category : Joi.string()
+            .valid("Trending","Rooms","Iconic Cities","Mountains","Castle","Amazing Pools","Camping","Farms","Arctic","Domes","Boats")
+            .required()
     }).required()
 });
 

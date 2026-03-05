@@ -40,11 +40,19 @@
         <a class="nav-link" href="/listings">Explore</a>
       </div>
       <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-        <input class="form-control me-2 search-inp" type="search" placeholder="Search Destinations" />
-        <button class="btn search-btn" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>Search</button>
-        </form>
+        <form class="d-flex" role="search" action="/listings" method="GET" id="search-form">
+          <input 
+              class="form-control me-2 search-inp" 
+              type="text" 
+              name="q"
+              id="search-input"
+              value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+              placeholder="Search Destinations" 
+          />
+          <button class="btn search-btn" type="submit" style="white-space: nowrap;">
+              <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+      </form>
       </div>
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">Airbnb your Home</a>
@@ -59,3 +67,56 @@
     </div>
   </div>
 </nav>
+
+<script>
+    const searchInput = document.getElementById("search-input");
+
+    if (searchInput.value) {
+        searchInput.focus();
+        const len = searchInput.value.length;
+        searchInput.setSelectionRange(len, len);
+    }
+
+    let debounceTimer;
+    searchInput.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(async () => {
+            const q = searchInput.value.trim();
+            const grid = document.getElementById("listings-grid");
+            if (!grid) return; // only run on index page
+
+            try {
+                const url = q ? `/listings/search?q=${encodeURIComponent(q)}` : `/listings/search`;
+                const res = await fetch(url);
+                const listings = await res.json();
+
+                if (listings.length === 0) {
+                    grid.innerHTML = `
+                        <div class="text-center mt-5 w-100">
+                            <h4>No listings found for "<%= typeof searchQuery !== 'undefined' ? '${q}' : '' %>"</h4>
+                            <a href="/listings" class="btn btn-outline-danger mt-2">Clear</a>
+                        </div>`;
+                    return;
+                }
+
+                grid.innerHTML = listings.map(l => `
+                    <a href="/listings/${l._id}" class="listing-link">
+                        <div class="card col listing-card">
+                            <img src="${l.image.url}" class="card-img-top" alt="listing-image" style="height: 15rem">
+                            <div class="card-img-overlay"></div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <b>${l.title}</b><br>
+                                    &#8377; ${l.price} / night
+                                    <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                `).join("");
+            } catch(err) {
+                console.error("Search failed", err);
+            }
+        }, 300);
+    });
+</script>

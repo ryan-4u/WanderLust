@@ -22,6 +22,11 @@ body{
     color: #222222 !important;
 }
 
+.active-filter {
+    border-bottom: 2px solid black;
+    opacity: 1 !important;
+}
+
 /* footer */
 .f-info-links a{
     text-decoration: none;
@@ -112,8 +117,10 @@ body{
 /* filters */
         #filters{
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             align-items: center;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
         }
         .filter{
             text-align: center;
@@ -141,5 +148,7 @@ body{
             padding: 1rem;
             display: flex;
             align-items: center;
-            margin-left: 3rem;
+            margin-left: auto;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
