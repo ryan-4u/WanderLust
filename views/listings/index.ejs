@@ -27,27 +27,21 @@
         ];
         %>
         <% for(let cat of categories) { %>
-            
-                <a href="/listings?category=<%= encodeURIComponent(cat.name) %>"
-                class="filter <%= activeCategory === cat.name ? 'active-filter' : '' %>"
-            >
-                <div><i class="<%= cat.icon %>"></i></div>
-                <p><%= cat.name %></p>
-            </a>
+          <div
+            class="filter <%= activeCategory === cat.name ? 'active-filter' : '' %>"
+            data-category="<%= cat.name %>"
+          >
+            <div><i class="<%= cat.icon %>"></i></div>
+            <p><%= cat.name %></p>
+          </div>
         <% } %>
     </div>
 
     <div class="filter-arrow" id="filter-next">&#8250;</div>
 
-    <% if(activeCategory) { %>
-        <a href="/listings" class="filter-clear-btn active" title="Clear filter">
-            <i class="fa-solid fa-sliders"></i>
-        </a>
-    <% } else { %>
-        <a href="/listings" class="filter-clear-btn" title="No active filter">
-            <i class="fa-solid fa-sliders"></i>
-        </a>
-    <% } %>
+    <div class="filter-clear-btn <%= activeCategory ? 'active' : '' %>" id="filter-clear" title="Clear filter">
+      <i class="fa-solid fa-sliders"></i>
+    </div>
 
     <div class="tax-toggle">
         <div class="form-check-reverse form-switch">

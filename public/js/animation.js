@@ -17,13 +17,13 @@ if (heroCarousel) {
   const GAP = 20;
 
   function getConfig() {
-    const wrapH = wrapEl.getBoundingClientRect().height;
+    const wrapH = 520; // fixed height matching .hero-carousel-wrap in CSS
     const centerY = wrapH / 2;
     return {
-      active: { y: centerY - ACTIVE_H / 2,                   width: ACTIVE_W, height: ACTIVE_H, opacity: 1,    scale: 1,   filter: 'brightness(1)',    zIndex: 3 },
-      prev:   { y: centerY - ACTIVE_H / 2 - GAP - SMALL_H,   width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
-      next:   { y: centerY + ACTIVE_H / 2 + GAP,             width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
-      hidden: { y: wrapH + 60,                                width: SMALL_W,  height: SMALL_H,  opacity: 0,    scale: 0.7, filter: 'brightness(0.72)', zIndex: 1 },
+      active: { y: centerY - ACTIVE_H / 2,                  width: ACTIVE_W, height: ACTIVE_H, opacity: 1,    scale: 1,   filter: 'brightness(1)',    zIndex: 3 },
+      prev:   { y: centerY - ACTIVE_H / 2 - GAP - SMALL_H,  width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
+      next:   { y: centerY + ACTIVE_H / 2 + GAP,            width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
+      hidden: { y: wrapH + 60,                               width: SMALL_W,  height: SMALL_H,  opacity: 0,    scale: 0.7, filter: 'brightness(0.72)', zIndex: 1 },
     };
   }
 
@@ -69,6 +69,10 @@ if (heroCarousel) {
 
   // Call directly — DOM is ready when external script runs
   initSlides();
+  setTimeout(() => {
+    nextSlide();
+    setInterval(nextSlide, 2500);
+  }, 100);
 
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
   tl.from("#heroBadge",   { opacity: 0, y: 24, duration: 0.8 })
@@ -76,9 +80,7 @@ if (heroCarousel) {
     .from("#heroDesc",    { opacity: 0, y: 20, duration: 0.8 }, "-=0.5")
     .from("#heroActions", { opacity: 0, y: 20, duration: 0.8 }, "-=0.5")
     .from("#heroStats",   { opacity: 0, y: 20, duration: 0.8 }, "-=0.4")
-    .call(() => {
-      setInterval(nextSlide, 3000);
-    }, null, "+=0.1");
+    
 }
 
 // ── Navbar — slide down on load ──
