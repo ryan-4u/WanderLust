@@ -186,20 +186,26 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const coordinates = <%- JSON.stringify(listing.geometry ? listing.geometry.coordinates : [0,0]) %>;
+  const coordinates = <%- JSON.stringify(listing.geometry ? listing.geometry.coordinates : [77.2090, 28.6139]) %>;
   const title = <%- JSON.stringify(listing.title) %>;
   const price = <%- JSON.stringify(listing.price) %>;
   const lat = coordinates[1];
   const lng = coordinates[0];
 
-  const map = L.map("map").setView([lat, lng], 10);
+  const isDefault = (lat === 28.6139 && lng === 77.2090);
+  const isFallback = (lat === 0 && lng === 0);
+
+  const center = isFallback ? [28.6139, 77.2090] : [lat, lng];
+  const zoom   = isFallback ? 5 : (isDefault ? 10 : 12);
+
+  const map = L.map("map").setView(center, zoom);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  if (lat !== 0 || lng !== 0) {
-    L.marker([lat, lng])
+  if (!isFallback) {
+    L.marker(center)
       .addTo(map)
       .bindPopup(`<b>${title}</b><br>&#8377; ${price} / night`)
       .openPopup();
