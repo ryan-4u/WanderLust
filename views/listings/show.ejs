@@ -226,9 +226,36 @@
   }).addTo(map);
 
   if (!isFallback) {
-    L.marker(center)
+    // Custom marker
+  const markerHtml = `
+    <div class="custom-marker" id="map-marker">
+      <i class="fa-solid fa-house custom-marker-icon" id="marker-icon"></i>
+    </div>
+  `;
+
+  const customIcon = L.divIcon({
+    html: markerHtml,
+    className: '',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  });
+
+  if (!isFallback) {
+    const marker = L.marker(center, { icon: customIcon })
       .addTo(map)
-      .bindPopup(`<b>${title}</b><br>&#8377; ${price} / night`)
-      .openPopup();
+      .bindPopup(`<b>${title}</b><br>&#8377; ${price} / night`);
+
+      marker.openPopup();
+
+      // Hover — switch to compass icon
+      marker.getElement().addEventListener('mouseenter', () => {
+        document.getElementById('marker-icon').className = 'fa-regular fa-compass custom-marker-icon hovered';
+      });
+
+      marker.getElement().addEventListener('mouseleave', () => {
+        document.getElementById('marker-icon').className = 'fa-solid fa-house custom-marker-icon';
+      });
+    }
   }
 </script>

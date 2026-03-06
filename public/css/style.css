@@ -1356,6 +1356,38 @@ body {
   padding: 0.75rem 3.5rem;
 }
 
+/* ── Custom Map Marker ── */
+.custom-marker {
+  width: 40px;
+  height: 40px;
+  background: var(--red);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(254,66,77,0.4);
+  cursor: pointer;
+  transition: all 2s ease;
+}
+
+.custom-marker:hover {
+  background: var(--red);
+  box-shadow: 0 4px 16px rgba(26,26,46,0.4);
+  transform: rotate(-45deg) scale(1.05);
+}
+
+.custom-marker-icon {
+  transform: rotate(45deg);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.custom-marker-icon.hovered {
+  font-size: 1.1rem;
+}
+
 /* ── Flash Toasts ── */
 .flash-toast {
   position: fixed;
