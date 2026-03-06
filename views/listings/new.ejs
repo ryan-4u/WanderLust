@@ -1,70 +1,70 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container mt-4 mb-4">
-<div class="row">
-    <div class="col-8 offset-2">
-    <h3>Create a new Listing</h3>
-    <form method="POST" action="/listings" class="needs-validation" novalidate enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" name="listing[title]" placeholder="Add a catchy Title" class="form-control" required>
-            <div class="valid-feedback">Title looks Good!</div>
-        </div>
+<div class="form-page">
+  <div class="form-page-header">
+    <h2 class="form-title">Create a Listing</h2>
+    <p class="form-sub">Fill in the details below to list your place on WanderLust</p>
+  </div>
 
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]" placeholder="Enter description" class="form-control" required></textarea>
-            <div class="invalid-feedback">Please enter a short description</div>
-        </div>
+  <form method="POST" action="/listings" class="needs-validation" novalidate enctype="multipart/form-data">
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Image Link</label>
-            <input type="file" name="listing[image]"  class="form-control" >
-            required
-        </div>
-        
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input type="number"  min="1" name="listing[price]" placeholder="1200" class="form-control" required>
-            <div class="invalid-feedback">Price should be valid</div>
-        </div >
-        
-        <div class="mb-3 col-md-8">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" name="listing[country]" placeholder="India" class="form-control" required>
-            <div class="invalid-feedback">Country name should be valid</div>
-        </div>   
-        </div>
-
-        <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input type="text" name="listing[location]" placeholder="Hisar,Haryana" class="form-control" required>
-            <div class="invalid-feedback">Location should be valid</div>
-        </div>
-         
-        <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
-            <select name="listing[category]" id="category" class="form-select" required>
-                <option value="" disabled selected>-- Select a Category --</option>
-                <option value="Trending">Trending</option>
-                <option value="Rooms">Rooms</option>
-                <option value="Iconic Cities">Iconic Cities</option>
-                <option value="Mountains">Mountains</option>
-                <option value="Castle">Castle</option>
-                <option value="Amazing Pools">Amazing Pools</option>
-                <option value="Camping">Camping</option>
-                <option value="Farms">Farms</option>
-                <option value="Arctic">Arctic</option>
-                <option value="Domes">Domes</option>
-                <option value="Boats">Boats</option>
-            </select>
-            <div class="invalid-feedback">Please select a category</div>
-        </div>
-        
-        <button class="btn btn-dark add-btn mt-2">Add</button>
-    </form>
-
+    <div class="form-group">
+      <label class="form-lbl">Title</label>
+      <input type="text" name="listing[title]" placeholder="Add a catchy title" class="form-inp" required>
+      <div class="valid-feedback">Looks good!</div>
+      <div class="invalid-feedback">Title is required</div>
     </div>
-</div>
+
+    <div class="form-group">
+      <label class="form-lbl">Description</label>
+      <textarea name="listing[description]" placeholder="Describe your place..." class="form-inp form-inp-ta-tall" required></textarea>
+      <div class="invalid-feedback">Please add a description</div>
+    </div>
+
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-lbl">Price <span class="form-lbl-sub">₹ / night</span></label>
+        <input type="number" min="1" name="listing[price]" placeholder="1200" class="form-inp" required>
+        <div class="invalid-feedback">Enter a valid price</div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Country</label>
+        <input type="text" name="listing[country]" placeholder="India" class="form-inp" required>
+        <div class="invalid-feedback">Country is required</div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Category</label>
+        <select name="listing[category]" class="form-inp form-inp-select" required>
+          <option value="" disabled selected>-- Select --</option>
+          <option value="Trending">Trending</option>
+          <option value="Rooms">Rooms</option>
+          <option value="Iconic Cities">Iconic Cities</option>
+          <option value="Mountains">Mountains</option>
+          <option value="Castle">Castle</option>
+          <option value="Amazing Pools">Amazing Pools</option>
+          <option value="Camping">Camping</option>
+          <option value="Farms">Farms</option>
+          <option value="Arctic">Arctic</option>
+          <option value="Domes">Domes</option>
+          <option value="Boats">Boats</option>
+        </select>
+        <div class="invalid-feedback">Please select a category</div>
+      </div>
+    </div>
+
+    <div class="form-row-file-loc">
+      <div class="form-group">
+        <label class="form-lbl">Image</label>
+        <input type="file" name="listing[image]" class="form-inp form-inp-file" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Location</label>
+        <input type="text" name="listing[location]" placeholder="Hisar, Haryana" class="form-inp" required>
+        <div class="invalid-feedback">Location is required</div>
+      </div>
+    </div>
+
+    <button class="form-submit-btn">Create Listing</button>
+
+  </form>
 </div>

@@ -1,76 +1,83 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="container mt-4 mb-4">
-<div class="row">
-    <div class="col-8 offset-2">
-    <h3>Edit your Listing</h3>
-    <form method="POST" action="/listings/<%=listing._id%>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data"
->
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" name="listing[title]" value="<%= listing.title %>" class="form-control" required>
-            <div class="invalid-feedback">Title is mandatory</div>
-            <div class="valid-feedback">Title is set</div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
-            <div class="invalid-feedback">Please write a short description</div>
-        </div>
-        
-        <div class="mb-3">
-            Original Listing Image <br>
-            <img src="<%= originalImageUrl %>" alt="Original Listing Image" height="120" width="240">
-        </div>
+<div class="form-page">
+  <div class="form-page-header">
+    <h2 class="form-title">Edit Listing</h2>
+    <p class="form-sub">Update your listing details below</p>
+  </div>
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload New Image</label>
-            <input type="file" name="listing[image]"  class="form-control" >
-            <div class="invalid-feedback">Image link is mandatory</div>
-        </div>
-         
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" name="listing[price]" value="<%= listing.price %>" class="form-control" required>
-            <div class="invalid-feedback">Price should be valid</div>
-        </div>
-        
-        <div class="mb-3 col-md-8">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" name="listing[country]" value="<%= listing.country %>" class="form-control" required>
-            <div class="invalid-feedback">Country should be valid</div>
-        </div>
-        </div>
+  <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate enctype="multipart/form-data">
 
-        <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input type="text" name="listing[location]" value="<%= listing.location %>" class="form-control" required>
-            <div class="invalid-feedback">Location should be valid</div>
-        </div>
-        
-        <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
-            <select name="listing[category]" id="category" class="form-select" required>
-                <option value="" disabled>-- Select a Category --</option>
-                <option value="Trending"      <%= listing.category === "Trending"      ? "selected" : "" %>>Trending</option>
-                <option value="Rooms"         <%= listing.category === "Rooms"         ? "selected" : "" %>>Rooms</option>
-                <option value="Iconic Cities" <%= listing.category === "Iconic Cities" ? "selected" : "" %>>Iconic Cities</option>
-                <option value="Mountains"     <%= listing.category === "Mountains"     ? "selected" : "" %>>Mountains</option>
-                <option value="Castle"        <%= listing.category === "Castle"        ? "selected" : "" %>>Castle</option>
-                <option value="Amazing Pools" <%= listing.category === "Amazing Pools" ? "selected" : "" %>>Amazing Pools</option>
-                <option value="Camping"       <%= listing.category === "Camping"       ? "selected" : "" %>>Camping</option>
-                <option value="Farms"         <%= listing.category === "Farms"         ? "selected" : "" %>>Farms</option>
-                <option value="Arctic"        <%= listing.category === "Arctic"        ? "selected" : "" %>>Arctic</option>
-                <option value="Domes"         <%= listing.category === "Domes"         ? "selected" : "" %>>Domes</option>
-                <option value="Boats"         <%= listing.category === "Boats"         ? "selected" : "" %>>Boats</option>
-            </select>
-            <div class="invalid-feedback">Please select a category</div>
-        </div>
-    
-        <button class="btn btn-dark edit-btn mt-2">Edit</button>
-    </form>
+    <!-- Row 1: Title full width -->
+    <div class="form-group">
+      <label class="form-lbl">Title</label>
+      <input type="text" name="listing[title]" value="<%= listing.title %>" class="form-inp" required>
+      <div class="invalid-feedback">Title is required</div>
+      <div class="valid-feedback">Looks good!</div>
     </div>
-</div>
+
+    <!-- Row 2: Image preview left, Description right -->
+    <div class="form-row-img-desc">
+    <div class="form-group">
+        <label class="form-lbl">Current Image</label>
+        <div class="form-img-preview">
+        <img src="<%= originalImageUrl %>" alt="Current listing image">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-lbl">Description</label>
+        <textarea name="listing[description]" class="form-inp form-inp-ta-tall" required><%= listing.description %></textarea>
+        <div class="invalid-feedback">Please add a description</div>
+    </div>
+    </div>
+
+    <!-- Row 3: Price · Country · Category -->
+    <div class="form-row-3">
+      <div class="form-group">
+        <label class="form-lbl">Price <span class="form-lbl-sub">₹ / night</span></label>
+        <input type="number" name="listing[price]" value="<%= listing.price %>" class="form-inp" required>
+        <div class="invalid-feedback">Enter a valid price</div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Country</label>
+        <input type="text" name="listing[country]" value="<%= listing.country %>" class="form-inp" required>
+        <div class="invalid-feedback">Country is required</div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Category</label>
+        <select name="listing[category]" class="form-inp form-inp-select" required>
+          <option value="" disabled>-- Select --</option>
+          <option value="Trending"      <%= listing.category === "Trending"      ? "selected" : "" %>>Trending</option>
+          <option value="Rooms"         <%= listing.category === "Rooms"         ? "selected" : "" %>>Rooms</option>
+          <option value="Iconic Cities" <%= listing.category === "Iconic Cities" ? "selected" : "" %>>Iconic Cities</option>
+          <option value="Mountains"     <%= listing.category === "Mountains"     ? "selected" : "" %>>Mountains</option>
+          <option value="Castle"        <%= listing.category === "Castle"        ? "selected" : "" %>>Castle</option>
+          <option value="Amazing Pools" <%= listing.category === "Amazing Pools" ? "selected" : "" %>>Amazing Pools</option>
+          <option value="Camping"       <%= listing.category === "Camping"       ? "selected" : "" %>>Camping</option>
+          <option value="Farms"         <%= listing.category === "Farms"         ? "selected" : "" %>>Farms</option>
+          <option value="Arctic"        <%= listing.category === "Arctic"        ? "selected" : "" %>>Arctic</option>
+          <option value="Domes"         <%= listing.category === "Domes"         ? "selected" : "" %>>Domes</option>
+          <option value="Boats"         <%= listing.category === "Boats"         ? "selected" : "" %>>Boats</option>
+        </select>
+        <div class="invalid-feedback">Please select a category</div>
+      </div>
+    </div>
+
+    <!-- Row 4: File · Location side by side -->
+    <div class="form-row-file-loc">
+    <div class="form-group">
+        <label class="form-lbl">New Image <span class="form-lbl-sub">(keep empty to retain)</span></label>
+        <input type="file" name="listing[image]" class="form-inp form-inp-file" accept="image/*">
+    </div>
+    <div class="form-group">
+        <label class="form-lbl">Location</label>
+        <input type="text" name="listing[location]" value="<%= listing.location %>" class="form-inp" required>
+        <div class="invalid-feedback">Location is required</div>
+    </div>
+    </div>
+
+    <!-- Row 5: Button -->
+    <button class="form-submit-btn">Save Changes</button>
+
+  </form>
 </div>
