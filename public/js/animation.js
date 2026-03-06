@@ -193,3 +193,11 @@ if (formPage) {
     );
   }
 }
+
+// ── Flash Toasts — auto dismiss ──
+document.querySelectorAll('.flash-toast').forEach((toast) => {
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+});
