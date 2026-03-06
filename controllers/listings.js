@@ -12,7 +12,7 @@ module.exports.index = async (req, res) => {
   if (favorites === "true" && req.user) {
     const User = require("../models/user");
     const user = await User.findById(req.user._id).populate("favorites");
-    allListings = user.favorites;
+    allListings = user.favorites.reverse();
   } else {
     if (category) filter.category = category;
     if (q && q.trim() !== "") {
@@ -22,7 +22,7 @@ module.exports.index = async (req, res) => {
         { country:  { $regex: q, $options: "i" } },
       ];
     }
-    allListings = await Listing.find(filter);
+    allListings = await Listing.find(filter).sort({ _id: -1 });
   }
 
   res.render("listings/index.ejs", {
@@ -55,8 +55,6 @@ module.exports.showListing = async (req,res) => {
 };
 
 module.exports.createListing = async (req,res,next) => {
-
-    // Enforce image required on create
     if (!req.file) {
       req.flash("error", "Image is required");
       return res.redirect("/listings/new");
@@ -67,7 +65,6 @@ module.exports.createListing = async (req,res,next) => {
     newListing.owner = req.user._id ;
     newListing.image = {url,filename} ;
 
-    // geocode the location
     const coordinates = await geocode(newListing.location, newListing.country);
     newListing.geometry = { type: "Point", coordinates };
 
@@ -94,13 +91,11 @@ module.exports.updateListing = async (req, res) => {
     throw new ExpressError(400, "Send Valid data for listing");
   }
   let { id } = req.params;
-  // Fetch listing first
   let listing = await Listing.findById(id);
   if (!listing) {
     req.flash("error", "Listing not found");
     return res.redirect("/listings");
   }
-  // Update basic fields manually
   listing.title = req.body.listing.title;
   listing.description = req.body.listing.description;
   listing.price = req.body.listing.price;
@@ -108,17 +103,13 @@ module.exports.updateListing = async (req, res) => {
   listing.location = req.body.listing.location;
   listing.category = req.body.listing.category;
 
-  // re-geocode if location or country changed
   const coordinates = await geocode(listing.location, listing.country);
   listing.geometry = { type: "Point", coordinates };
 
-  // If new image uploaded
   if (req.file) {
-    // Only delete if old image exists
     if (listing.image && listing.image.filename) {
       await cloudinary.uploader.destroy(listing.image.filename);
     }
-
     listing.image = {
       url: req.file.secure_url,
       filename: req.file.public_id
@@ -138,7 +129,6 @@ module.exports.destroyListing = async (req, res) => {
     req.flash("error", "Listing not found");
     return res.redirect("/listings");
   }
-  // delete image from Cloudinary if exists
   if (listing.image && listing.image.filename) {
     await cloudinary.uploader.destroy(listing.image.filename);
   }
@@ -148,21 +138,21 @@ module.exports.destroyListing = async (req, res) => {
 };
 
 module.exports.search = async (req, res) => {
-    const { q, category } = req.query;
-    let filter = {};
+  const { q, category } = req.query;
+  let filter = {};
 
-    if (category) filter.category = category;
+  if (category) filter.category = category;
 
-    if (q && q.trim() !== "") {
-        filter.$or = [
-            { title:    { $regex: q, $options: "i" } },
-            { location: { $regex: q, $options: "i" } },
-            { country:  { $regex: q, $options: "i" } },
-        ];
-    }
+  if (q && q.trim() !== "") {
+    filter.$or = [
+      { title:    { $regex: q, $options: "i" } },
+      { location: { $regex: q, $options: "i" } },
+      { country:  { $regex: q, $options: "i" } },
+    ];
+  }
 
-    const allListings = await Listing.find(filter);
-    res.json(allListings);
+  const allListings = await Listing.find(filter).sort({ _id: -1 });
+  res.json(allListings);
 };
 
 module.exports.toggleFavorite = async (req, res) => {

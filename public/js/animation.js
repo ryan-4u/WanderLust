@@ -17,13 +17,21 @@ if (heroCarousel) {
   const GAP = 20;
 
   function getConfig() {
-    const wrapH = 520; // fixed height matching .hero-carousel-wrap in CSS
+    const wrapH = wrapEl.getBoundingClientRect().height || 520;
     const centerY = wrapH / 2;
+    const isMobile = window.innerWidth <= 576;
+
+    const ACTIVE_W_R = isMobile ? 260 : 440;
+    const ACTIVE_H_R = isMobile ? 160 : 280;
+    const SMALL_W_R  = isMobile ? 160 : 260;
+    const SMALL_H_R  = isMobile ? 75  : 130;
+    const GAP_R      = isMobile ? 14  : 20;
+
     return {
-      active: { y: centerY - ACTIVE_H / 2,                  width: ACTIVE_W, height: ACTIVE_H, opacity: 1,    scale: 1,   filter: 'brightness(1)',    zIndex: 3 },
-      prev:   { y: centerY - ACTIVE_H / 2 - GAP - SMALL_H,  width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
-      next:   { y: centerY + ACTIVE_H / 2 + GAP,            width: SMALL_W,  height: SMALL_H,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
-      hidden: { y: wrapH + 60,                               width: SMALL_W,  height: SMALL_H,  opacity: 0,    scale: 0.7, filter: 'brightness(0.72)', zIndex: 1 },
+      active: { y: centerY - ACTIVE_H_R / 2,                    width: ACTIVE_W_R, height: ACTIVE_H_R, opacity: 1,    scale: 1,   filter: 'brightness(1)',    zIndex: 3 },
+      prev:   { y: centerY - ACTIVE_H_R / 2 - GAP_R - SMALL_H_R, width: SMALL_W_R,  height: SMALL_H_R,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
+      next:   { y: centerY + ACTIVE_H_R / 2 + GAP_R,             width: SMALL_W_R,  height: SMALL_H_R,  opacity: 0.55, scale: 0.9, filter: 'brightness(0.72)', zIndex: 2 },
+      hidden: { y: wrapH + 60,                                    width: SMALL_W_R,  height: SMALL_H_R,  opacity: 0,    scale: 0.7, filter: 'brightness(0.72)', zIndex: 1 },
     };
   }
 

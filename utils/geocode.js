@@ -19,7 +19,7 @@ module.exports.geocode = async (location, country) => {
 
       if (response.data && response.data.length > 0) {
         const { lon, lat } = response.data[0];
-        console.log(`Geocoded "${q}" → [${lon}, ${lat}]`);
+        // console.log(`Geocoded "${q}" → [${lon}, ${lat}]`);
         return [parseFloat(lon), parseFloat(lat)];
       }
     } catch (err) {
