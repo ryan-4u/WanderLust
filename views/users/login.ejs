@@ -1,23 +1,36 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">Login</h1>
-    <div class="col-6 offset-3">
-        
-        <form action="/login" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" name="username" class="form-control" required>
-                <div class="valid-feedback">Looks Good!</div>
-            </div>
+<div class="auth-page">
+  <div class="auth-card">
 
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-
-            <button class="btn btn-success">Login</button>
-        </form>
-
+    <div class="auth-header">
+      <i class="fa-regular fa-compass auth-icon"></i>
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-sub">Log in to your WanderLust account</p>
     </div>
+
+    <form action="/login" method="POST" class="needs-validation" novalidate>
+
+      <div class="form-group">
+        <label class="form-lbl">Username</label>
+        <input type="text" id="username" name="username" class="form-inp" placeholder="Your username" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Username is required</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-lbl">Password</label>
+        <input type="password" id="password" name="password" class="form-inp" placeholder="Your password" required>
+        <div class="invalid-feedback">Password is required</div>
+      </div>
+
+      <button class="form-submit-btn" style="margin-top:0.5rem">Log In</button>
+
+    </form>
+
+    <p class="auth-switch">
+      Don't have an account? <a href="/signup">Sign Up</a>
+    </p>
+
+  </div>
 </div>
