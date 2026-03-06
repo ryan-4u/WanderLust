@@ -63,10 +63,15 @@ passport.use( new LocalStrategy( User.authenticate() ));
 passport.serializeUser( User.serializeUser() ) ;
 passport.deserializeUser( User.deserializeUser() ) ;
 
-app.use( (req,res,next) => {
-  res.locals.success = req.flash("success") ;
-  res.locals.error = req.flash("error") ;
-  res.locals.currUser = req.user ;
+app.use(async (req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  if (req.user) {
+    const User = require("./models/user.js");
+    res.locals.currUser = await User.findById(req.user._id).select("username email favorites");
+  } else {
+    res.locals.currUser = null;
+  }
   next();
 });
 

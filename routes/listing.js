@@ -15,8 +15,8 @@ router
   .post(isLoggedIn , upload.single('listing[image]') , validateListing , wrapAsync( listingController.createListing)) ;// Create route
 
 router.get("/new" ,isLoggedIn , listingController.renderNewForm ); //new route
-
 router.get("/search", wrapAsync(listingController.search)); //search
+router.post("/:id/favorite", isLoggedIn, wrapAsync(listingController.toggleFavorite));
 
 router
   .route("/:id")

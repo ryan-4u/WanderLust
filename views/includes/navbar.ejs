@@ -39,11 +39,14 @@
       <div class="navbar-nav ms-auto d-flex align-items-center gap-1">
         <a class="nav-link-host" href="/listings/new">List your Home</a>
         <% if(!currUser) { %>
-          <a class="nav-btn nav-btn-outline" href="/login">Log In</a>
-          <a class="nav-btn nav-btn-solid" href="/signup">Sign Up</a>
-        <% } %>
+          <a class="nav-btn nav-btn-outline" href="/signup">Sign Up</a>
+          <a class="nav-btn nav-btn-solid" href="/login">Log In</a>
+          <% } %>
         <% if(currUser) { %>
-          <a class="nav-btn nav-btn-outline" href="/logout">Log Out</a>
+          <a class="nav-btn nav-btn-favorites <%= typeof showingFavorites !== 'undefined' && showingFavorites ? 'favorites-active' : '' %>" href="/listings?favorites=true">
+            <i class="<%= typeof showingFavorites !== 'undefined' && showingFavorites ? 'fa-solid' : 'fa-regular' %> fa-heart"></i> Favorites
+          </a>
+          <a class="nav-btn nav-btn-solid" href="/logout">Log Out</a>
         <% } %>
       </div>
 

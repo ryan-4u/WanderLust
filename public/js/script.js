@@ -13,14 +13,66 @@
   })
 })()
 
+// Infinite circular filter scroll
+const filtersEl = document.getElementById("filters");
+if (filtersEl) {
+  const items = Array.from(filtersEl.children);
+  items.forEach(item => {
+    const clone = item.cloneNode(true);
+    clone.setAttribute("aria-hidden", "true");
+    filtersEl.appendChild(clone);
+  });
+
+  const itemWidth = filtersEl.scrollWidth / 2;
+
+  filtersEl.addEventListener("scroll", () => {
+    if (filtersEl.scrollLeft >= itemWidth) {
+      filtersEl.scrollLeft -= itemWidth;
+    }
+    if (filtersEl.scrollLeft <= 0) {
+      filtersEl.scrollLeft += itemWidth;
+    }
+  });
+
+  // Arrow buttons — scroll by one item width
+  const filterPrev = document.getElementById("filter-prev");
+  const filterNext = document.getElementById("filter-next");
+
+  const singleItem = filtersEl.querySelector(".filter");
+  const scrollAmount = singleItem ? singleItem.offsetWidth : 120;
+
+  if (filterNext) {
+    filterNext.addEventListener("click", () => {
+      filtersEl.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    });
+  }
+
+  if (filterPrev) {
+    filterPrev.addEventListener("click", () => {
+      filtersEl.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    });
+  }
+}
+
 // Tax toggle
+// Tax toggle — persist state across page loads
 const taxSwitch = document.getElementById("switchCheckDefault");
 if (taxSwitch) {
+  // Restore saved state
+  if (sessionStorage.getItem("taxToggle") === "true") {
+    taxSwitch.checked = true;
+    const taxInfo = document.getElementsByClassName("tax-info");
+    for (let info of taxInfo) {
+      info.style.display = "inline";
+    }
+  }
+
   taxSwitch.addEventListener("click", () => {
     const taxInfo = document.getElementsByClassName("tax-info");
     for (let info of taxInfo) {
       info.style.display = info.style.display !== "inline" ? "inline" : "none";
     }
+    sessionStorage.setItem("taxToggle", taxSwitch.checked);
   });
 }
 
@@ -56,24 +108,64 @@ if (searchInput) {
           return;
         }
 
-        grid.innerHTML = listings.map(l => `
-          <a href="/listings/${l._id}" class="listing-link">
-            <div class="card col listing-card">
-              <img src="${l.image.url}" class="card-img-top" alt="listing-image" style="height:15rem">
-              <div class="card-img-overlay"></div>
-              <div class="card-body">
-                <p class="card-text">
-                  <b>${l.title}</b><br>
-                  &#8377; ${l.price} / night
-                  <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
-                </p>
+       grid.innerHTML = listings.map(l => `
+        <a href="/listings/${l._id}" class="listing-link">
+          <div class="card col listing-card">
+            <div class="listing-img-wrap">
+              <img src="${l.image.url}" class="card-img-top" alt="listing-image">
+              <span class="listing-category-badge">${l.category || ''}</span>
+            </div>
+            <div class="card-body">
+              <div class="listing-title">${l.title}</div>
+              <div class="listing-location"><i class="fa-solid fa-location-dot"></i> ${l.location}, ${l.country}</div>
+              <div class="listing-price">
+                &#8377; ${l.price} <span class="per-night">/ night</span>
+                <i class="tax-info">+18% GST</i>
               </div>
             </div>
-          </a>
-        `).join("");
+          </div>
+        </a>
+      `).join("");
       } catch(err) {
         console.error("Search failed", err);
       }
     }, 300);
   });
 }
+
+// Heart / Favorites toggle
+document.querySelectorAll(".heart-btn").forEach(btn => {
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (btn.dataset.loggedIn === "false") {
+      window.location.href = "/login";
+      return;
+    }
+
+    const id = btn.dataset.id;
+    const icon = btn.querySelector("i");
+
+    try {
+      const res = await fetch(`/listings/${id}/favorite`, { method: "POST" });
+
+      if (res.redirected || !res.ok) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.favorited) {
+        icon.classList.replace("fa-regular", "fa-solid");
+        btn.classList.add("favorited");
+      } else {
+        icon.classList.replace("fa-solid", "fa-regular");
+        btn.classList.remove("favorited");
+      }
+    } catch (err) {
+      window.location.href = "/login";
+    }
+  });
+});

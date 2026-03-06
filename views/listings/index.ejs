@@ -1,37 +1,51 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<div id="filters">
-    <% 
-    const categories = [
-        { name: "Trending",      icon: "fa-solid fa-fire" },
-        { name: "Rooms",         icon: "fa-solid fa-bed" },
-        { name: "Iconic Cities", icon: "fa-solid fa-mountain-city" },
-        { name: "Mountains",     icon: "fa-solid fa-mountain" },
-        { name: "Castle",        icon: "fa-brands fa-fort-awesome" },
-        { name: "Amazing Pools", icon: "fa-solid fa-person-swimming" },
-        { name: "Camping",       icon: "fa-solid fa-campground" },
-        { name: "Farms",         icon: "fa-solid fa-cow" },
-        { name: "Arctic",        icon: "fa-regular fa-snowflake" },
-        { name: "Domes",         icon: "fa-solid fa-igloo" },
-        { name: "Boats",         icon: "fa-solid fa-ship" },
-    ];
-    %>
+<% if(typeof showingFavorites !== 'undefined' && showingFavorites) { %>
+  <div class="favorites-banner">
+    <i class="fa-solid fa-heart"></i> Your Favorite Stays
+    <a href="/listings" class="favorites-clear">Show all listings</a>
+  </div>
+<% } %>
 
-    <% for(let cat of categories) { %>
-        <a 
-            href="/listings?category=<%= encodeURIComponent(cat.name) %>" 
-            class="filter <%= activeCategory === cat.name ? 'active-filter' : '' %>"
-            style="text-decoration: none; color: inherit;"
-        >
-            <div><i class="<%= cat.icon %>"></i></div>
-            <p><%= cat.name %></p>
-        </a>
-    <% } %>
+<div id="filter-bar">
+    <div class="filter-arrow" id="filter-prev">&#8249;</div>
+
+    <div id="filters">
+        <%
+        const categories = [
+            { name: "Trending",      icon: "fa-solid fa-fire" },
+            { name: "Rooms",         icon: "fa-solid fa-bed" },
+            { name: "Iconic Cities", icon: "fa-solid fa-mountain-city" },
+            { name: "Mountains",     icon: "fa-solid fa-mountain" },
+            { name: "Castle",        icon: "fa-brands fa-fort-awesome" },
+            { name: "Amazing Pools", icon: "fa-solid fa-person-swimming" },
+            { name: "Camping",       icon: "fa-solid fa-campground" },
+            { name: "Farms",         icon: "fa-solid fa-cow" },
+            { name: "Arctic",        icon: "fa-regular fa-snowflake" },
+            { name: "Domes",         icon: "fa-solid fa-igloo" },
+            { name: "Boats",         icon: "fa-solid fa-ship" },
+        ];
+        %>
+        <% for(let cat of categories) { %>
+            
+                <a href="/listings?category=<%= encodeURIComponent(cat.name) %>"
+                class="filter <%= activeCategory === cat.name ? 'active-filter' : '' %>"
+            >
+                <div><i class="<%= cat.icon %>"></i></div>
+                <p><%= cat.name %></p>
+            </a>
+        <% } %>
+    </div>
+
+    <div class="filter-arrow" id="filter-next">&#8250;</div>
 
     <% if(activeCategory) { %>
-        <a href="/listings" class="filter" style="text-decoration:none; color:inherit;">
-            <div><i class="fa-solid fa-xmark"></i></div>
-            <p>Clear</p>
+        <a href="/listings" class="filter-clear-btn active" title="Clear filter">
+            <i class="fa-solid fa-sliders"></i>
+        </a>
+    <% } else { %>
+        <a href="/listings" class="filter-clear-btn" title="No active filter">
+            <i class="fa-solid fa-sliders"></i>
         </a>
     <% } %>
 
@@ -44,29 +58,50 @@
 </div>
 
 <% if(allListings.length === 0) { %>
-    <div class="text-center mt-5">
-        <h4>No listings found
-            <% if(activeCategory) { %> in "<%= activeCategory %>" <% } %>
-            <% if(searchQuery) { %> for "<%= searchQuery %>" <% } %>
-        </h4>
-        <a href="/listings" class="btn btn-outline-danger mt-2">Clear Filters</a>
-    </div>
+  <div class="empty-state">
+    <% if(typeof showingFavorites !== 'undefined' && showingFavorites) { %>
+      <i class="fa-regular fa-heart empty-state-icon"></i>
+      <h4>No favorites yet</h4>
+      <p>Click the ♡ on any listing to save it here</p>
+      <a href="/listings" class="btn-main mt-3">Explore Stays</a>
+    <% } else { %>
+      <i class="fa-solid fa-magnifying-glass empty-state-icon"></i>
+      <h4>No listings found
+        <% if(activeCategory) { %> in "<%= activeCategory %>"<% } %>
+        <% if(searchQuery) { %> for "<%= searchQuery %>"<% } %>
+      </h4>
+      <a href="/listings" class="btn-main mt-3">Clear Filters</a>
+    <% } %>
+  </div>
 <% } %>
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 mt-3" id="listings-grid">
 <% for(let listing of allListings){ %>
-    <a href="/listings/<%= listing._id %>" class="listing-link">
-        <div class="card col listing-card">
-            <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-image" style="height: 15rem">
-            <div class="card-img-overlay"></div>
-            <div class="card-body">
-                <p class="card-text">
-                    <b><%= listing.title %></b> <br>
-                    &#8377; <%= listing.price %> / night
-                    <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
-                </p>
-            </div>
+  <a href="/listings/<%= listing._id %>" class="listing-link">
+    <div class="card col listing-card">
+      <div class="listing-img-wrap">
+        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-image">
+        <span class="listing-category-badge"><%= listing.category %></span>
+          <%
+            const isFav = currUser && currUser.favorites &&
+                currUser.favorites.map(f => f.toString()).includes(listing._id.toString());
+           %>
+          <button
+            class="heart-btn <%= isFav ? 'favorited' : '' %>"
+            data-id="<%= listing._id %>"
+          >
+            <i class="<%= isFav ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
+          </button>
+      </div>
+      <div class="card-body">
+        <div class="listing-title"><%= listing.title %></div>
+        <div class="listing-location"><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></div>
+        <div class="listing-price">
+          &#8377; <%= listing.price %> <span class="per-night">/ night</span>
+          <i class="tax-info">+18% GST</i>
         </div>
-    </a>
+      </div>
+    </div>
+  </a>
 <% } %>
 </div>

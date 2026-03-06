@@ -4,24 +4,33 @@ const ExpressError = require("../utils/ExpressError")
 const { geocode } = require("../utils/geocode");
 
 module.exports.index = async (req, res) => {
-    const { category, q } = req.query;
+  const { category, q, favorites } = req.query;
 
-    let filter = {};
+  let filter = {};
+  let allListings;
 
-    if (category) {
-        filter.category = category;
-    }
-
+  if (favorites === "true" && req.user) {
+    const User = require("../models/user");
+    const user = await User.findById(req.user._id).populate("favorites");
+    allListings = user.favorites;
+  } else {
+    if (category) filter.category = category;
     if (q && q.trim() !== "") {
-        filter.$or = [
-            { title:    { $regex: q, $options: "i" } },
-            { location: { $regex: q, $options: "i" } },
-            { country:  { $regex: q, $options: "i" } },
-        ];
+      filter.$or = [
+        { title:    { $regex: q, $options: "i" } },
+        { location: { $regex: q, $options: "i" } },
+        { country:  { $regex: q, $options: "i" } },
+      ];
     }
+    allListings = await Listing.find(filter);
+  }
 
-    const allListings = await Listing.find(filter);
-    res.render("listings/index.ejs", { allListings, activeCategory: category || null, searchQuery: q || "" });
+  res.render("listings/index.ejs", {
+    allListings,
+    activeCategory: category || null,
+    searchQuery: q || "",
+    showingFavorites: favorites === "true",
+  });
 };
 
 module.exports.renderNewForm = (req,res) => {
@@ -154,4 +163,20 @@ module.exports.search = async (req, res) => {
 
     const allListings = await Listing.find(filter);
     res.json(allListings);
+};
+
+module.exports.toggleFavorite = async (req, res) => {
+  const { id } = req.params;
+  const User = require("../models/user");
+  const user = await User.findById(req.user._id);
+
+  const index = user.favorites.findIndex(f => f.toString() === id);
+  if (index === -1) {
+    user.favorites.push(id);
+  } else {
+    user.favorites.splice(index, 1);
+  }
+
+  await user.save();
+  res.json({ favorited: index === -1 });
 };

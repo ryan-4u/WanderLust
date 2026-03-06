@@ -3,13 +3,16 @@ const Review = require("./models/review.js") ;
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema,reviewSchema} = require("./schema.js") ;
 
-module.exports.isLoggedIn = (req,res,next) => {
-    if( !req.isAuthenticated() ){
-        req.session.redirectUrl = req.originalUrl ; // storing intended path by user 
-        req.flash("error","you must be logged in to perform the action") ;
-        return res.redirect("/login");
+module.exports.isLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    // don't save favorite URLs as redirect destination
+    if (!req.originalUrl.includes("/favorite")) {
+      req.session.redirectUrl = req.originalUrl;
     }
-    next() ;
+    req.flash("error", "you must be logged in to perform the action");
+    return res.redirect("/login");
+  }
+  next();
 }
 
 // saving original path to locals from session
