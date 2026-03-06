@@ -83,6 +83,7 @@
           <button
             class="heart-btn <%= isFav ? 'favorited' : '' %>"
             data-id="<%= listing._id %>"
+            data-logged-in="<%= currUser ? 'true' : 'false' %>"
           >
             <i class="<%= isFav ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
           </button>
@@ -98,4 +99,7 @@
     </div>
   </a>
 <% } %>
+<script>
+  window.CURRENT_USER = "<%= currUser ? currUser._id : '' %>";
+</script>
 </div>

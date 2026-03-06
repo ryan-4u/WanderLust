@@ -99,8 +99,7 @@ function renderListings(listings, query = "") {
         <div class="listing-img-wrap">
           <img src="${l.image.url}" class="card-img-top" alt="listing-image">
           <span class="listing-category-badge">${l.category || ''}</span>
-          <button class="heart-btn" data-id="${l._id}" data-logged-in="false">
-            <i class="fa-regular fa-heart"></i>
+          <button class="heart-btn" data-id="${l._id}" data-logged-in="${!!window.CURRENT_USER}">            <i class="fa-regular fa-heart"></i>
           </button>
         </div>
         <div class="card-body">
