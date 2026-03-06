@@ -1,383 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderLust</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'DM Sans', sans-serif; }
-
-.hero {
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-/* Background image */
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1800&q=90') center/cover no-repeat;
-  transform: scale(1.04);
-  animation: slowZoom 14s ease forwards;
-}
-
-@keyframes slowZoom {
-  from { transform: scale(1.04); }
-  to   { transform: scale(1); }
-}
-
-/* Gradient overlay — heavier at bottom where text sits */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(250,245,235,0.05) 0%,
-      rgba(250,245,235,0.1) 30%,
-      rgba(250,245,235,0.55) 60%,
-      rgba(250,245,235,0.92) 80%,
-      rgba(250,245,235,1) 100%
-    );
-}
-
-/* Top navbar area — subtle logo + nav */
-.hero-top {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  padding: 2rem 5vw;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 10;
-  animation: fadeIn 1s ease 0.2s both;
-}
-
-.hero-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #1a1410;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-}
-
-.hero-logo span { color: #c05c3a; }
-
-.hero-nav {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.hero-nav a {
-  font-size: 0.82rem;
-  color: #3a2f27;
-  text-decoration: none;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  transition: color 0.2s;
-}
-
-.hero-nav a:hover { color: #c05c3a; }
-
-.hero-nav .nav-cta {
-  background: #1a1410;
-  color: #faf5eb !important;
-  padding: 0.55rem 1.4rem;
-  border-radius: 3px;
-  transition: background 0.2s !important;
-}
-
-.hero-nav .nav-cta:hover {
-  background: #c05c3a !important;
-  color: white !important;
-}
-
-/* Main content — bottom aligned */
-.hero-content {
-  position: relative;
-  z-index: 5;
-  padding: 0 5vw 5vh;
-  max-width: 900px;
-}
-
-.hero-location-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(192,92,58,0.2);
-  border-radius: 20px;
-  padding: 0.35rem 1rem;
-  margin-bottom: 1.75rem;
-  animation: fadeUp 0.7s ease 0.5s both;
-}
-
-.hero-location-tag .pin { color: #c05c3a; font-size: 0.8rem; }
-
-.hero-location-tag span {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #5a4a3a;
-  font-weight: 500;
-}
-
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.2rem, 6vw, 6.5rem);
-  font-weight: 400;
-  color: #1a1410;
-  line-height: 1.08;
-  margin-bottom: 1.5rem;
-  animation: fadeUp 0.8s ease 0.65s both;
-}
-
-.hero-title em {
-  font-style: italic;
-  font-weight: 300;
-  color: #c05c3a;
-}
-
-.hero-bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 3rem;
-  animation: fadeUp 0.8s ease 0.85s both;
-}
-
-.hero-desc {
-  font-size: 1rem;
-  color: #6b5a4a;
-  line-height: 1.85;
-  max-width: 420px;
-  font-weight: 300;
-}
-
-.hero-right-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1.5rem;
-  flex-shrink: 0;
-}
-
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.btn-main {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #c05c3a;
-  color: white;
-  padding: 1rem 2.4rem;
-  border-radius: 3px;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  transition: all 0.25s;
-  box-shadow: 0 4px 20px rgba(192,92,58,0.3);
-}
-
-.btn-main:hover {
-  background: #a04830;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(192,92,58,0.4);
-}
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  color: #1a1410;
-  padding: 1rem 2rem;
-  border-radius: 3px;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  border: 1px solid rgba(26,20,16,0.15);
-  transition: all 0.25s;
-}
-
-.btn-ghost:hover {
-  background: rgba(255,255,255,0.9);
-  color: #1a1410;
-  transform: translateY(-2px);
-}
-
-/* Stats row */
-.hero-stats {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.8);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.hero-stat {
-  padding: 0.85rem 1.75rem;
-  text-align: center;
-  border-right: 1px solid rgba(26,20,16,0.08);
-}
-
-.hero-stat:last-child { border-right: none; }
-
-.stat-n {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #1a1410;
-  line-height: 1;
-  margin-bottom: 0.2rem;
-}
-
-.stat-l {
-  font-size: 0.62rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #9c8878;
-}
-
-/* Trust strip at very bottom */
-.trust-strip {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255,255,255,0.7);
-  padding: 0.75rem 5vw;
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  z-index: 10;
-  animation: fadeIn 1s ease 1.2s both;
-}
-
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.72rem;
-  color: #6b5a4a;
-  white-space: nowrap;
-}
-
-.trust-item .check {
-  color: #3dbb6e;
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
-.trust-sep {
-  width: 1px; height: 16px;
-  background: rgba(26,20,16,0.1);
-}
-
-/* Animations */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
-}
+<% layout("/layouts/boilerplate") %>
+<style> 
+  .f-info { display: none; } 
+  .container { padding-top: 0 !important; }
 </style>
-</head>
-<body>
 
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
+<div class="hero-page">
 
-  <!-- Top bar -->
-  <div class="hero-top">
-    <a href="#" class="hero-logo">Wander<span>Lust</span></a>
-    <nav class="hero-nav">
-      <a href="/listings">Explore</a>
-      <a href="/login">Log In</a>
-      <a href="/signup" class="nav-cta">Sign Up Free</a>
-    </nav>
-  </div>
-
-  <!-- Main content -->
-  <div class="hero-content">
-
-    <div class="hero-location-tag">
-      <span class="pin">📍</span>
-      <span>50+ countries · 500+ unique stays</span>
+  <!-- Left -->
+  <div class="hero-left">
+    <div class="hero-badge">
+      <i class="fa-solid fa-fire"></i> Trusted by thousands of travelers
     </div>
-
     <h1 class="hero-title">
-      Every journey begins<br>
-      with finding the <em>right place</em><br>
-      to call home.
+      Find your next<br>
+      <span>perfect stay</span>
     </h1>
-
-    <div class="hero-bottom">
-      <p class="hero-desc">
-        Discover handpicked stays from verified hosts — cozy cabins, beachfront villas, mountain retreats and more. Book with confidence, anywhere in the world.
-      </p>
-
-      <div class="hero-right-col">
-        <div class="hero-actions">
-          <a href="/listings" class="btn-main">Find a Stay →</a>
-          <a href="/listings/new" class="btn-ghost">List your Home</a>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="stat-n">50+</div>
-            <div class="stat-l">Countries</div>
-          </div>
-          <div class="hero-stat">
-            <div class="stat-n">500+</div>
-            <div class="stat-l">Unique Stays</div>
-          </div>
-          <div class="hero-stat">
-            <div class="stat-n">10K+</div>
-            <div class="stat-l">Happy Guests</div>
-          </div>
-        </div>
+    <p class="hero-desc">
+      Discover handpicked homes, cabins, villas and unique stays across the world. Every trip starts with the right place.
+    </p>
+    <div class="hero-actions">
+      <a href="/listings" class="hero-btn-primary">Explore Stays</a>
+      <a href="/listings/new" class="hero-btn-outline">List your Home</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">500+</span>
+        <span class="hero-stat-label">Listings</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">11</span>
+        <span class="hero-stat-label">Categories</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">100%</span>
+        <span class="hero-stat-label">Verified Hosts</span>
       </div>
     </div>
-
   </div>
 
-  <!-- Trust strip -->
-  <div class="trust-strip">
-    <div class="trust-item"><span class="check">✓</span> Verified Hosts</div>
-    <div class="trust-sep"></div>
-    <div class="trust-item"><span class="check">✓</span> Secure Booking</div>
-    <div class="trust-sep"></div>
-    <div class="trust-item"><span class="check">✓</span> 24/7 Guest Support</div>
-    <div class="trust-sep"></div>
-    <div class="trust-item"><span class="check">✓</span> Free Cancellation on select stays</div>
+  <!-- Right — rotating carousel -->
+  <div class="hero-right">
+    <div class="hero-carousel-wrap">
+      <div class="hero-carousel" id="heroCarousel">
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=600&q=80" alt="Trending">
+          <span class="hero-slide-label">Trending</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80" alt="Rooms">
+          <span class="hero-slide-label">Rooms</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="Iconic Cities">
+          <span class="hero-slide-label">Iconic Cities</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Mountains">
+          <span class="hero-slide-label">Mountains</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=600&q=80" alt="Castle">
+          <span class="hero-slide-label">Castle</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=600&q=80" alt="Amazing Pools">
+          <span class="hero-slide-label">Amazing Pools</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=80" alt="Camping">
+          <span class="hero-slide-label">Camping</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80" alt="Farms">
+          <span class="hero-slide-label">Farms</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1551582045-6ec9c11d8697?w=600&q=80" alt="Arctic">
+          <span class="hero-slide-label">Arctic</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80" alt="Domes">
+          <span class="hero-slide-label">Domes</span>
+        </div>
+        <div class="hero-slide">
+          <img src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80" alt="Boats">
+          <span class="hero-slide-label">Boats</span>
+        </div>
+    </div>
   </div>
 
-</section>
+</div>
 
-</body>
-</html>
+<script>
+const slides = document.querySelectorAll('.hero-slide');
+const total = slides.length;
+let current = 0;
+
+function updateCarousel() {
+  slides.forEach((slide, i) => {
+    slide.classList.remove('pos-prev', 'pos-active', 'pos-next', 'pos-hidden');
+
+    const prev = (current + 1) % total;
+    const next = (current - 1 + total) % total;
+
+    if (i === prev)         slide.classList.add('pos-prev');
+    else if (i === current) slide.classList.add('pos-active');
+    else if (i === next)    slide.classList.add('pos-next');
+    else                    slide.classList.add('pos-hidden');
+  });
+}
+
+function nextSlide() {
+  current = (current + 1) % total;
+  updateCarousel();
+}
+
+updateCarousel();
+setInterval(nextSlide, 3000);
+</script>
