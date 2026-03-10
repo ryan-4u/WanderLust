@@ -15,21 +15,9 @@
 
 ## 📸 Screenshots
 
-> **Add screenshots here** — take these from your live site and upload to the repo:
->
-> | Page | What to capture |
-> |---|---|
-> | `screenshots/landing.png` | Home page with GSAP carousel |
-> | `screenshots/listings.png` | Listings grid with filter bar |
-> | `screenshots/show.png` | Show page with map + reviews |
-> | `screenshots/mobile.png` | Mobile view (DevTools device mode) |
->
-> Then replace this block with:
-> ```md
-> | Landing | Listings | Show Page |
-> |---|---|---|
-> | ![Landing](screenshots/landing.png) | ![Listings](screenshots/listings.png) | ![Show](screenshots/show.png) |
-> ```
+| Landing | Listings | Show Page | Mobile |
+|---|---|---|---|
+| ![Landing](screenshots/landing.PNG) | ![Listings](screenshots/listings.PNG) | ![Show](screenshots/show.PNG) | ![Mobile](screenshots/mobile.PNG) |
 
 <br>
 
