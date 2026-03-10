@@ -22,8 +22,11 @@ const reviewRouter = require("./routes/review.js") ;
 const userRouter = require("./routes/user.js") ;
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust" ;
-const dbUrl = process.env.ATLASDB_URL ;
-
+const dbUrl = process.env.ATLASDB_URL || "mongodb+srv://aaryanofficial64_db_user:JvaAb4NbYEr4FeMz@cluster0.wfgjj8x.mongodb.net/wanderlust?retryWrites=true&w=majority&appName=Cluster0";
+if (!dbUrl) {
+  console.error("ATLASDB_URL is not defined!");
+  process.exit(1);
+}
 main()
   .then( (res) => {
     console.log("connected to our db wanderlust") ;
@@ -46,7 +49,7 @@ app.use(express.static(path.join(__dirname,"/public"))) ;
 const store = MongoStore.create({
   mongoUrl: dbUrl ,
   crypto: {
-    secret : "mysupersecretcode"
+    secret : process.env.SECRET
   } ,
   touchAfter : 24 * 3600 ,
 });
@@ -58,7 +61,7 @@ store.on( "error" , (err) => {
 // using session
 const sessionOptions = {
   store ,
-  secret : "mysupersecretcode" ,
+  secret : process.env.SECRET ,
   resave : false ,
   saveUninitialized : true ,
   cookie :{
